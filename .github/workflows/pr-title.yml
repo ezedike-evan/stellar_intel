@@ -33,7 +33,6 @@ jobs:
           # Optionally enforce scope (remove or adjust as needed)
           requireScope: false
           # Allow "!" breaking change marker (e.g. "feat!: drop Node 18")
-          disallowScopes: []
           subjectPattern: ^.+$
           subjectPatternError: >
             The PR title must follow the Conventional Commits format:

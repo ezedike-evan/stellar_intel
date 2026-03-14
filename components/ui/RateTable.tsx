@@ -2,7 +2,6 @@
 import { clsx } from 'clsx'
 import { Badge } from './Badge'
 import { Button } from './Button'
-import { Spinner } from './Spinner'
 import type { RiskLevel } from '@/types'
 
 export interface RateTableColumn {
