@@ -3,7 +3,6 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { clsx } from 'clsx'
 import { Sun, Moon, Zap } from 'lucide-react'
-import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { useTheme } from '@/hooks/useTheme'
 
