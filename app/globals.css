@@ -16,7 +16,7 @@
   --secondary-text: #6b7280;
   --background: #ffffff;
   --bg-subtle: #f9fafb;
-  --border: #000000;
+  --border: #e2e8f0;
   --accent: #2563eb;
 }
 
@@ -25,6 +25,6 @@
   --secondary-text: #9ca3af;
   --background: #000000;
   --bg-subtle: #111827;
-  --border: #ffffff;
-  --accent: #60a5fa;
+  --border: #1e293b;
+  --accent: #2563eb;
 }

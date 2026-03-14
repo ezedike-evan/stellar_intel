@@ -35,7 +35,7 @@ function SkeletonRow({ cols }: { cols: number }) {
     <tr>
       {Array.from({ length: cols }).map((_, i) => (
         <td key={i} className="px-4 py-3">
-          <div className="h-4 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+          <div className="h-4 animate-pulse rounded bg-gray-200 dark:bg-gray-700"/>
         </td>
       ))}
     </tr>
@@ -98,7 +98,7 @@ export function RateTable({
                 <tr
                   key={row.id}
                   className={clsx(
-                    'border-b border-gray-100 transition-colors last:border-0 dark:border-gray-800',
+                    'border-b border-gray-100 transition-colors last:border-0 dark:border-gray-800 text-primary-text',
                     isSelected
                       ? 'bg-blue-50 dark:bg-blue-950/30'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800/30',
