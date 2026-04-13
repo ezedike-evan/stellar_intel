@@ -1,15 +1,10 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowDownLeft, ArrowUpRight, Sprout, ArrowLeftRight } from 'lucide-react';
+import { ArrowDownLeft } from 'lucide-react';
 import { clsx } from 'clsx';
 
-const TAB_LINKS = [
-  { href: '/offramp', label: 'Off-ramp', icon: ArrowDownLeft },
-  { href: '/onramp', label: 'On-ramp', icon: ArrowUpRight },
-  { href: '/yield', label: 'Yield', icon: Sprout },
-  { href: '/swap', label: 'Swap', icon: ArrowLeftRight },
-];
+const TAB_LINKS = [{ href: '/offramp', label: 'Off-ramp', icon: ArrowDownLeft }];
 
 export function BottomNav() {
   const pathname = usePathname();

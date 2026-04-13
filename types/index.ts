@@ -33,28 +33,7 @@ export interface AnchorRate {
   isMock?: boolean;
 }
 
-// ─── Yield ───────────────────────────────────────────────────────────────────
-
-export type RiskLevel = 'low' | 'medium' | 'high';
-export type YieldAsset = 'USDC' | 'XLM' | 'USDY' | 'EURC';
-
-export interface YieldRate {
-  protocolId: string;
-  protocolName: string;
-  logoUrl?: string;
-  asset: YieldAsset;
-  apy: number; // 0.05 = 5%
-  tvl: number; // USD value
-  minDeposit: number;
-  lockupDays: number; // 0 = no lockup
-  riskLevel: RiskLevel;
-  description: string;
-  isBest?: boolean;
-  lastUpdated: Date;
-  isMock?: boolean;
-}
-
-// ─── Swap ────────────────────────────────────────────────────────────────────
+// ─── Swap routing (SDEX path results) ────────────────────────────────────────
 
 export type SwapSource = 'SDEX' | 'Soroswap' | 'Phoenix' | 'Aquarius';
 
@@ -65,15 +44,16 @@ export interface SwapRoute {
   toAsset: StellarAsset;
   fromAmount: number;
   toAmount: number;
-  price: number; // toAmount / fromAmount
-  priceImpact: number; // 0.003 = 0.3%
-  fee: number; // in fromAsset units
-  path: StellarAsset[]; // intermediate hops including from/to
+  price: number;
+  priceImpact: number;
+  fee: number;
+  path: StellarAsset[];
   estimatedTime: string;
   isBest?: boolean;
   lastUpdated: Date;
-  isMock?: boolean;
 }
+
+// ─── Stellar assets ───────────────────────────────────────────────────────────
 
 export interface StellarAsset {
   code: string;
@@ -82,23 +62,11 @@ export interface StellarAsset {
   logoUrl?: string;
 }
 
-// ─── Network stats ───────────────────────────────────────────────────────────
-
-export interface NetworkStats {
-  totalAnchors: number;
-  bestUsdcOfframpRate: number | null;
-  bestUsdcOfframpAnchor: string | null;
-  highestYieldApy: number | null;
-  highestYieldProtocol: string | null;
-  lastUpdated: Date;
-}
-
 // ─── Shared UI ───────────────────────────────────────────────────────────────
 
+export type RiskLevel = 'low' | 'medium' | 'high';
 export type SortDirection = 'asc' | 'desc';
 export type OfframpSortKey = 'rate' | 'fee' | 'time' | 'total';
-export type YieldSortKey = 'apy' | 'tvl' | 'risk' | 'lockup';
-export type SwapSortKey = 'price' | 'impact' | 'fee';
 
 export interface Country {
   code: string; // ISO 3166-1 alpha-2

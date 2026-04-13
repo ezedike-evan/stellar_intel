@@ -1,6 +1,8 @@
-import { horizonServer } from './stellar';
+import { Horizon } from '@stellar/stellar-sdk';
 import { HORIZON_URL } from '@/constants';
 import type { SwapRoute, StellarAsset } from '@/types';
+
+export const horizonServer = new Horizon.Server(HORIZON_URL);
 
 export interface OrderBookData {
   bids: Array<{ price: number; amount: number }>;

@@ -7,10 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { useTheme } from '@/hooks/useTheme';
 
 const NAV_LINKS = [
-  { href: '/offramp', label: 'Off-ramp' },
-  { href: '/onramp', label: 'On-ramp' },
-  { href: '/yield', label: 'Yield' },
-  { href: '/swap', label: 'Swap' },
+  { href: '/offramp', label: 'Off-ramp' }
 ];
 
 export function Navbar() {

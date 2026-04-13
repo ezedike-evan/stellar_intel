@@ -3,11 +3,9 @@ import { useState } from 'react';
 import { RefreshCw, Clock } from 'lucide-react';
 import { CountrySelector } from '@/components/offramp/CountrySelector';
 import { CurrencyDisplay } from '@/components/offramp/CurrencySelector';
-import { RateTable, type RateTableColumn, type RateTableRow } from '@/components/ui/RateTable';
+import { type RateTableColumn } from '@/components/ui/RateTable';
 import { Button } from '@/components/ui/Button';
-import { useAnchorRates } from '@/hooks/useAnchorRates';
 import { SUPPORTED_COUNTRIES } from '@/constants';
-import { formatRate, formatAmount, formatPercent } from '@/lib/stellar';
 import type { Country, OfframpSortKey } from '@/types';
 
 const COLUMNS: RateTableColumn[] = [
@@ -23,34 +21,6 @@ export default function OfframpPage() {
   const [amount, setAmount] = useState(100);
   const [sortKey, setSortKey] = useState<OfframpSortKey>('rate');
   const [selectedId, setSelectedId] = useState<string>();
-
-  const { data: rates, isLoading, mutate } = useAnchorRates(country.code, country.currency, amount);
-
-  const sorted = rates
-    ? [...rates].sort((a, b) => {
-        if (sortKey === 'rate') return b.exchangeRate - a.exchangeRate;
-        if (sortKey === 'fee') return a.fee - b.fee;
-        if (sortKey === 'total') return (b.totalReceived ?? 0) - (a.totalReceived ?? 0);
-        return 0;
-      })
-    : [];
-
-  const rows: RateTableRow[] = sorted.map((r) => ({
-    id: r.anchorId,
-    isBest: r.isBest,
-    isWorst: r.isWorst,
-    isMock: r.isMock,
-    cells: {
-      provider: r.anchorName,
-      rate: formatRate(r.exchangeRate, country.currencySymbol),
-      fee: `${formatAmount(r.fee)} + ${formatPercent(r.feePercent)}`,
-      total:
-        r.totalReceived != null
-          ? `${country.currencySymbol}${new Intl.NumberFormat('en-US', { maximumFractionDigits: 2 }).format(r.totalReceived)}`
-          : '—',
-      time: r.estimatedTime,
-    },
-  }));
 
   return (
     <div className="space-y-6">
@@ -94,29 +64,17 @@ export default function OfframpPage() {
           ))}
         </div>
         <div className="flex items-center gap-2">
-          {rates?.[0] && (
+          {true && (
             <span className="flex items-center gap-1 text-xs text-gray-400">
               <Clock className="h-3 w-3" />
               Updated just now
             </span>
           )}
-          <Button variant="ghost" size="sm" onClick={() => mutate()}>
+          <Button variant="ghost" size="sm" onClick={() => {}}>
             <RefreshCw className="h-3.5 w-3.5" />
           </Button>
         </div>
       </div>
-
-      <RateTable
-        columns={COLUMNS}
-        rows={rows}
-        selectedId={selectedId}
-        onSelect={setSelectedId}
-        onExecute={(id) =>
-          alert(`Executing with ${id} on Stellar — wallet integration coming soon`)
-        }
-        isLoading={isLoading}
-        caption="Rates are indicative. // MOCK data — connect to real SEP-24 endpoints for production."
-      />
     </div>
   );
 }

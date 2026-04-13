@@ -1,8 +1,3 @@
-import { Horizon } from '@stellar/stellar-sdk';
-import { HORIZON_URL } from '@/constants';
-
-export const horizonServer = new Horizon.Server(HORIZON_URL);
-
 export function formatAmount(amount: number, currency = 'USD'): string {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
