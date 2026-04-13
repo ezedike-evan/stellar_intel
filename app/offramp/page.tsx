@@ -3,18 +3,9 @@ import { useState } from 'react';
 import { RefreshCw, Clock } from 'lucide-react';
 import { CountrySelector } from '@/components/offramp/CountrySelector';
 import { CurrencyDisplay } from '@/components/offramp/CurrencySelector';
-import { type RateTableColumn } from '@/components/ui/RateTable';
 import { Button } from '@/components/ui/Button';
 import { SUPPORTED_COUNTRIES } from '@/constants';
 import type { Country, OfframpSortKey } from '@/types';
-
-const COLUMNS: RateTableColumn[] = [
-  { key: 'provider', label: 'Provider' },
-  { key: 'rate', label: 'Rate (per USDC)' },
-  { key: 'fee', label: 'Fee' },
-  { key: 'total', label: 'You receive' },
-  { key: 'time', label: 'Est. time' },
-];
 
 export default function OfframpPage() {
   const [country, setCountry] = useState<Country>(SUPPORTED_COUNTRIES[0]);
