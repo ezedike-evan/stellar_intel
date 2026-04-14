@@ -9,6 +9,8 @@ const TYPICAL_FEES: Record<string, number> = {
   'usdc-ghs': 1.5,
   'usdc-mxn': 2,
   'usdc-brl': 2,
+  'usdc-ars': 3,
+  'usdc-pen': 2,
 }
 
 // Currency code to ISO 4217 for the exchange rate API
@@ -18,6 +20,8 @@ const CORRIDOR_CURRENCY: Record<string, string> = {
   'usdc-ghs': 'GHS',
   'usdc-mxn': 'MXN',
   'usdc-brl': 'BRL',
+  'usdc-ars': 'ARS',
+  'usdc-pen': 'PEN',
 }
 
 /**

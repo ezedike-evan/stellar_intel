@@ -12,8 +12,22 @@ export const USDC_ASSET: StellarAsset = {
 // ─── Anchors ──────────────────────────────────────────────────────────────────
 
 /**
+ * MoneyGram — all five corridors (USDC → NGN / KES / GHS / MXN / BRL).
+ * Confirmed live SEP-24 anchor. USDC withdraw enabled, max $2,500/tx.
+ * Cash pickup at MoneyGram agent locations worldwide.
+ */
+const MONEYGRAM: Anchor = {
+  id: 'moneygram',
+  name: 'MoneyGram',
+  homeDomain: 'stellar.moneygram.com',
+  corridors: ['usdc-ngn', 'usdc-kes', 'usdc-ghs', 'usdc-mxn', 'usdc-brl'],
+  assetCode: 'USDC',
+  assetIssuer: USDC_ISSUER,
+}
+
+/**
  * Cowrie Exchange — Nigeria corridor (USDC → NGN).
- * SEP-24 anchor for Nigerian bank account withdrawals.
+ * Uses SEP-6 (TRANSFER_SERVER), not SEP-24. Included for comparison.
  */
 const COWRIE: Anchor = {
   id: 'cowrie',
@@ -25,39 +39,26 @@ const COWRIE: Anchor = {
 }
 
 /**
- * Flutterwave — Nigeria, Kenya, and Ghana corridors (USDC → NGN / KES / GHS).
- * SEP-24 anchor supporting bank transfer and mobile money.
+ * Anclap — Argentina and Peru corridors (USDC → ARS / PEN).
+ * Confirmed live SEP-24 anchor. 2% withdrawal fee.
  */
-const FLUTTERWAVE: Anchor = {
-  id: 'flutterwave',
-  name: 'Flutterwave',
-  homeDomain: 'flutterwave.com',
-  corridors: ['usdc-ngn', 'usdc-kes', 'usdc-ghs'],
-  assetCode: 'USDC',
-  assetIssuer: USDC_ISSUER,
-}
-
-/**
- * Bitso — Mexico and Brazil corridors (USDC → MXN / BRL).
- * SEP-24 anchor for Latin American bank withdrawals.
- */
-const BITSO: Anchor = {
-  id: 'bitso',
-  name: 'Bitso',
-  homeDomain: 'bitso.com',
-  corridors: ['usdc-mxn', 'usdc-brl'],
+const ANCLAP: Anchor = {
+  id: 'anclap',
+  name: 'Anclap',
+  homeDomain: 'anclap.com',
+  corridors: ['usdc-ars', 'usdc-pen'],
   assetCode: 'USDC',
   assetIssuer: USDC_ISSUER,
 }
 
 /** All supported anchors. */
-export const ANCHORS: Anchor[] = [COWRIE, FLUTTERWAVE, BITSO] as const
+export const ANCHORS: Anchor[] = [MONEYGRAM, COWRIE, ANCLAP] as const
 
 /** Maps anchor ID → home domain for quick lookup during SEP-1 resolution. */
 export const ANCHOR_HOME_DOMAINS: Record<string, string> = {
+  moneygram: 'stellar.moneygram.com',
   cowrie: 'cowrie.exchange',
-  flutterwave: 'flutterwave.com',
-  bitso: 'bitso.com',
+  anclap: 'anclap.com',
 } as const
 
 // ─── Corridors ────────────────────────────────────────────────────────────────
@@ -102,6 +103,22 @@ const CORRIDOR_BRL: Corridor = {
   countryName: 'Brazil',
 }
 
+const CORRIDOR_ARS: Corridor = {
+  id: 'usdc-ars',
+  from: 'USDC',
+  to: 'ARS',
+  countryCode: 'AR',
+  countryName: 'Argentina',
+}
+
+const CORRIDOR_PEN: Corridor = {
+  id: 'usdc-pen',
+  from: 'USDC',
+  to: 'PEN',
+  countryCode: 'PE',
+  countryName: 'Peru',
+}
+
 /** All supported corridors. */
 export const CORRIDORS: Corridor[] = [
   CORRIDOR_NGN,
@@ -109,6 +126,8 @@ export const CORRIDORS: Corridor[] = [
   CORRIDOR_GHS,
   CORRIDOR_MXN,
   CORRIDOR_BRL,
+  CORRIDOR_ARS,
+  CORRIDOR_PEN,
 ] as const
 
 // ─── Lookup helpers ───────────────────────────────────────────────────────────

@@ -91,19 +91,19 @@ describe('resolveAllAnchors', () => {
 
     await resolveAllAnchors()
 
-    // ANCHORS has 3 entries: cowrie, flutterwave, bitso
+    // ANCHORS has 3 entries: moneygram, cowrie, anclap
     expect(spy).toHaveBeenCalledTimes(3)
   })
 
   it('returns partial results when one anchor fails', async () => {
     vi.spyOn(StellarToml.Resolver, 'resolve').mockImplementation((domain) => {
-      if (domain === 'bitso.com') return Promise.reject(new Error('timeout'))
+      if (domain === 'anclap.com') return Promise.reject(new Error('timeout'))
       return Promise.resolve(VALID_TOML as never)
     })
 
     const result = await resolveAllAnchors()
+    expect(result['moneygram']).toBeDefined()
     expect(result['cowrie']).toBeDefined()
-    expect(result['flutterwave']).toBeDefined()
-    expect(result['bitso']).toBeUndefined()
+    expect(result['anclap']).toBeUndefined()
   })
 })

@@ -10,12 +10,21 @@ import {
 } from '@/lib/stellar/anchors'
 
 describe('ANCHORS', () => {
-  it('contains exactly Cowrie, Flutterwave, and Bitso', () => {
+  it('contains MoneyGram, Cowrie, and Anclap', () => {
     const ids = ANCHORS.map((a) => a.id)
+    expect(ids).toContain('moneygram')
     expect(ids).toContain('cowrie')
-    expect(ids).toContain('flutterwave')
-    expect(ids).toContain('bitso')
+    expect(ids).toContain('anclap')
     expect(ids).toHaveLength(3)
+  })
+
+  it('MoneyGram covers all five primary corridors', () => {
+    const mg = ANCHORS.find((a) => a.id === 'moneygram')!
+    expect(mg.corridors).toContain('usdc-ngn')
+    expect(mg.corridors).toContain('usdc-kes')
+    expect(mg.corridors).toContain('usdc-ghs')
+    expect(mg.corridors).toContain('usdc-mxn')
+    expect(mg.corridors).toContain('usdc-brl')
   })
 
   it('Cowrie is only in usdc-ngn', () => {
@@ -23,48 +32,47 @@ describe('ANCHORS', () => {
     expect(cowrie.corridors).toEqual(['usdc-ngn'])
   })
 
-  it('Flutterwave is in usdc-ngn, usdc-kes, and usdc-ghs', () => {
-    const fw = ANCHORS.find((a) => a.id === 'flutterwave')!
-    expect(fw.corridors).toContain('usdc-ngn')
-    expect(fw.corridors).toContain('usdc-kes')
-    expect(fw.corridors).toContain('usdc-ghs')
-  })
-
-  it('Bitso is in usdc-mxn and usdc-brl', () => {
-    const bitso = ANCHORS.find((a) => a.id === 'bitso')!
-    expect(bitso.corridors).toContain('usdc-mxn')
-    expect(bitso.corridors).toContain('usdc-brl')
+  it('Anclap covers usdc-ars and usdc-pen', () => {
+    const anclap = ANCHORS.find((a) => a.id === 'anclap')!
+    expect(anclap.corridors).toContain('usdc-ars')
+    expect(anclap.corridors).toContain('usdc-pen')
   })
 })
 
 describe('CORRIDORS', () => {
-  it('contains exactly 5 corridors', () => {
-    expect(CORRIDORS).toHaveLength(5)
+  it('contains 7 corridors', () => {
+    expect(CORRIDORS).toHaveLength(7)
   })
 
   it('contains the expected corridor IDs', () => {
     const ids = CORRIDORS.map((c) => c.id)
     expect(ids).toEqual(
-      expect.arrayContaining(['usdc-ngn', 'usdc-kes', 'usdc-ghs', 'usdc-mxn', 'usdc-brl'])
+      expect.arrayContaining(['usdc-ngn', 'usdc-kes', 'usdc-ghs', 'usdc-mxn', 'usdc-brl', 'usdc-ars', 'usdc-pen'])
     )
   })
 })
 
 describe('ANCHOR_HOME_DOMAINS', () => {
+  it('maps moneygram to stellar.moneygram.com', () => {
+    expect(ANCHOR_HOME_DOMAINS['moneygram']).toBe('stellar.moneygram.com')
+  })
+
   it('maps cowrie to cowrie.exchange', () => {
     expect(ANCHOR_HOME_DOMAINS['cowrie']).toBe('cowrie.exchange')
   })
 
-  it('maps flutterwave to flutterwave.com', () => {
-    expect(ANCHOR_HOME_DOMAINS['flutterwave']).toBe('flutterwave.com')
-  })
-
-  it('maps bitso to bitso.com', () => {
-    expect(ANCHOR_HOME_DOMAINS['bitso']).toBe('bitso.com')
+  it('maps anclap to anclap.com', () => {
+    expect(ANCHOR_HOME_DOMAINS['anclap']).toBe('anclap.com')
   })
 })
 
 describe('getAnchorById', () => {
+  it('returns the MoneyGram anchor', () => {
+    const anchor = getAnchorById('moneygram')
+    expect(anchor.id).toBe('moneygram')
+    expect(anchor.homeDomain).toBe('stellar.moneygram.com')
+  })
+
   it('returns the Cowrie anchor', () => {
     const anchor = getAnchorById('cowrie')
     expect(anchor.id).toBe('cowrie')
@@ -77,24 +85,30 @@ describe('getAnchorById', () => {
 })
 
 describe('getAnchorsByCorridorId', () => {
-  it('returns Cowrie and Flutterwave for usdc-ngn', () => {
+  it('returns MoneyGram and Cowrie for usdc-ngn', () => {
     const anchors = getAnchorsByCorridorId('usdc-ngn')
     const ids = anchors.map((a) => a.id)
+    expect(ids).toContain('moneygram')
     expect(ids).toContain('cowrie')
-    expect(ids).toContain('flutterwave')
     expect(ids).toHaveLength(2)
   })
 
-  it('returns only Bitso for usdc-mxn', () => {
+  it('returns only MoneyGram for usdc-mxn', () => {
     const anchors = getAnchorsByCorridorId('usdc-mxn')
     expect(anchors).toHaveLength(1)
-    expect(anchors[0].id).toBe('bitso')
+    expect(anchors[0].id).toBe('moneygram')
   })
 
-  it('returns only Flutterwave for usdc-kes', () => {
+  it('returns only MoneyGram for usdc-kes', () => {
     const anchors = getAnchorsByCorridorId('usdc-kes')
     expect(anchors).toHaveLength(1)
-    expect(anchors[0].id).toBe('flutterwave')
+    expect(anchors[0].id).toBe('moneygram')
+  })
+
+  it('returns only Anclap for usdc-ars', () => {
+    const anchors = getAnchorsByCorridorId('usdc-ars')
+    expect(anchors).toHaveLength(1)
+    expect(anchors[0].id).toBe('anclap')
   })
 
   it('returns an empty array for an unknown corridor', () => {
@@ -109,6 +123,12 @@ describe('getCorridorById', () => {
     expect(corridor.countryCode).toBe('NG')
   })
 
+  it('returns the Argentina corridor', () => {
+    const corridor = getCorridorById('usdc-ars')
+    expect(corridor.to).toBe('ARS')
+    expect(corridor.countryCode).toBe('AR')
+  })
+
   it('throws a descriptive error for an unknown id', () => {
     expect(() => getCorridorById('unknown')).toThrow(/Unknown corridor.*"unknown"/)
   })
@@ -117,6 +137,10 @@ describe('getCorridorById', () => {
 describe('isValidCorridorId', () => {
   it('returns true for usdc-ngn', () => {
     expect(isValidCorridorId('usdc-ngn')).toBe(true)
+  })
+
+  it('returns true for usdc-ars', () => {
+    expect(isValidCorridorId('usdc-ars')).toBe(true)
   })
 
   it('returns false for an invalid id', () => {

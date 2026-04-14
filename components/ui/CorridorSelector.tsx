@@ -7,6 +7,8 @@ const COUNTRY_FLAGS: Record<string, string> = {
   GH: '🇬🇭',
   MX: '🇲🇽',
   BR: '🇧🇷',
+  AR: '🇦🇷',
+  PE: '🇵🇪',
 }
 
 interface CorridorSelectorProps {
