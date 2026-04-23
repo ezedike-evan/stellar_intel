@@ -43,3 +43,8 @@ next-env.d.ts
 
 # claude
 .claude
+
+# local planning artifacts (not shipped)
+/issue.md
+/maintainer.md
+/scripts/file-issues.mjs
