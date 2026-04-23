@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions — questions, ideas, show-and-tell
+    url: https://github.com/Ezedike-Evan/stellar-intel/discussions
+    about: Ask a question, discuss a design, show what you're building. Discussions are the right place for anything that isn't a concrete task.
+  - name: 🔐 Security vulnerability — private disclosure
+    url: https://github.com/Ezedike-Evan/stellar-intel/security/advisories/new
+    about: Do NOT open a public issue for a security vulnerability. Use a private advisory. See docs/SECURITY.md.
+  - name: 🔌 New anchor integration
+    url: https://github.com/Ezedike-Evan/stellar-intel/issues/new?template=anchor-onboard.yml
+    about: Apply to list a Stellar anchor on Stellar Intel.
+  - name: 📖 Documentation gap
+    url: https://github.com/Ezedike-Evan/stellar-intel/issues/new?template=docs.yml
+    about: Something in the docs is wrong, missing, or out of date.

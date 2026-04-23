@@ -1,0 +1,115 @@
+name: 📖 Documentation issue
+description: Something in the docs is wrong, missing, confusing, or out of date.
+title: "[DOCS] <doc file or section> — <short description>"
+labels:
+  - docs
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Docs are first-class here. A PR that breaks a claim in the docs is
+        a PR that breaks the product. Thanks for helping us keep them honest.
+
+        - For typos or single-sentence fixes: feel free to open the PR
+          directly and link this issue from it.
+        - For structural changes (new section, reorganisation): please
+          discuss here first.
+
+  - type: input
+    id: doc-path
+    attributes:
+      label: Which document?
+      description: Path relative to the repo root.
+      placeholder: "docs/ARCHITECTURE.md"
+    validations:
+      required: true
+
+  - type: input
+    id: section
+    attributes:
+      label: Which section / anchor?
+      description: Heading or `#anchor-slug`. Helps a reviewer land on the right paragraph.
+      placeholder: "§ 4.3 SEP-24 — interactive withdrawal"
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: What kind of problem?
+      options:
+        - Typo / grammar
+        - Factually wrong — disagrees with the code
+        - Outdated — was correct at merge time, no longer
+        - Unclear — technically right but hard to follow
+        - Missing — the subject isn't covered at all
+        - Example wrong — snippet doesn't compile / run
+        - Diagram wrong — Mermaid diagram disagrees with prose or code
+        - Broken link
+        - Dead cross-reference to another doc / issue / ticket
+        - Accessibility (contrast, alt-text, heading order)
+        - Translation
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's wrong?
+      description: Quote the exact offending text or paste the broken snippet. Show, don't tell.
+      placeholder: |
+        > "The SEP-10 client never caches a JWT."
+
+        Actually, `lib/stellar/sep10.ts:88` does cache the JWT in-memory
+        per anchor domain (scoped to the tab). The text contradicts the
+        code.
+    validations:
+      required: true
+
+  - type: textarea
+    id: fix
+    attributes:
+      label: Proposed fix
+      description: The exact replacement text, or a sketch of what should be there. "I don't know what the right answer is" is OK — say so.
+      placeholder: |
+        Replace with: "The SEP-10 client caches the JWT in-memory, scoped
+        to the anchor domain and tab lifetime. It is never persisted to
+        storage." Then add a note in § 9 "Trust boundaries" about the
+        no-persist invariant.
+
+  - type: textarea
+    id: affected-code
+    attributes:
+      label: Affected code path(s)
+      description: If the doc disagrees with code, point at the source of truth. `file_path:line_number` is the expected format.
+      placeholder: |
+        - `lib/stellar/sep10.ts:88` — JWT cache lives here
+        - `docs/ARCHITECTURE.md § 4.2` — doc paragraph to fix
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Affected audience
+      description: Who runs into this? Helps us prioritise.
+      multiple: true
+      options:
+        - New contributor reading for the first time
+        - Anchor operator evaluating onboarding
+        - Grant reviewer / investor
+        - Agent developer using the MCP surface
+        - SDK / API consumer
+        - Security researcher / auditor
+        - Maintainer
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I've searched existing issues and this isn't a duplicate
+          required: true
+        - label: I've checked the doc on `main` (not a stale fork or cached page)
+          required: true
+        - label: If the doc disagrees with code, I've confirmed the code is the source of truth (not the other way around — sometimes the *doc* is right and the *code* is wrong, in which case open a [bug](./bug.yml) instead)
+          required: true

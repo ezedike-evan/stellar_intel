@@ -1,0 +1,196 @@
+name: ✨ Feature request
+description: Propose something new — a capability, a refactor, a test you wish we had. For line-level scope that's already on the roadmap, link it instead.
+title: "[FEAT] [SCOPE] <short description>"
+labels:
+  - feature
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before you propose a feature:
+        1. Check [`docs/ROADMAP.md`](../blob/main/docs/ROADMAP.md) — if it's
+           already planned in a wave, link that wave and open a sub-issue
+           instead of a fresh feature request.
+        2. Check [`issue.md`](../blob/main/issue.md) — the 250 engineering
+           tickets covering v1 and v2. If your idea is already a ticket,
+           just link it.
+        3. For significant changes, open a Discussion first. Feature requests
+           should land with enough context that a reviewer can approve or
+           decline in one read.
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Problem / motivation
+      description: |
+        What user pain, system shortcoming, or strategic gap does this solve?
+        Lead with the problem, not the solution.
+      placeholder: |
+        Users on USDC→NGN can't see which anchor actually honoured its
+        quote historically — they pick on branding, not economics.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Concrete shape of the change. Include API shapes / UI sketches / data flows where relevant.
+      placeholder: |
+        Render a per-anchor scorecard inline in the RateTable row, sourced
+        from `GET /api/reputation/leaderboard?corridor=usdc-ngn`. Columns:
+        fill rate (30d), median slippage, p95 settle latency.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you weigh? Why did you reject it?
+      placeholder: |
+        Considered a separate /anchors leaderboard page. Rejected for v1
+        because the scorecard only matters at the moment of decision —
+        surfacing it next to the quote is strictly better.
+
+  - type: dropdown
+    id: wave
+    attributes:
+      label: Target wave
+      description: Which milestone does this belong to? See [`docs/ROADMAP.md`](../blob/main/docs/ROADMAP.md).
+      options:
+        - v1.0 — Core Executable
+        - v1.1 — Hardening + SEP-38
+        - v1.2 — Router + Seeds
+        - v1.3 — Polish + Release Gate
+        - v2.0 — Reputation as Product Surface
+        - v2.1 — Soroban Oracle Live
+        - v2.2 — Multi-Anchor Split Routing
+        - v2.3 — Public Reputation API + Bootstrap
+        - v3 — Guaranteed
+        - v4 — Universal (SDK + MCP + widget)
+        - v5 — Institutional
+        - cross-cutting (docs, ops, observability, security)
+        - unscoped — discuss wave placement
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope (Conventional-Commits area)
+      description: Match the scope the PR will use. See `.github/workflows/pr-title.yml`.
+      multiple: true
+      options:
+        - offramp
+        - anchors
+        - sep1
+        - sep10
+        - sep24
+        - sep38
+        - horizon
+        - freighter
+        - router
+        - intent
+        - reputation
+        - oracle
+        - mcp
+        - sdk
+        - api
+        - ui
+        - types
+        - tests
+        - ci
+        - ops
+        - docs
+    validations:
+      required: true
+
+  - type: dropdown
+    id: architecture-touch
+    attributes:
+      label: Architecture surface touched
+      description: Which subsystems will this land in? Keeps the review pool honest.
+      multiple: true
+      options:
+        - Intent schema / canonicalization
+        - Intent router (solver, scoring, splitting)
+        - Reputation write path (publisher, queue)
+        - Soroban oracle contract
+        - MCP server / agent surface
+        - SEP-10 / SEP-24 / SEP-38 client
+        - Horizon (on-ledger ops)
+        - React UI / components
+        - Hooks / data fetching
+        - API routes (`app/api/*`)
+        - CI / workflows
+        - Docs only
+        - None — additive on top of existing
+    validations:
+      required: true
+
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Is this a breaking change?
+      description: Breaking = changes a shipped API, env var, URL, MCP tool signature, or Soroban contract interface. See `docs/ARCHITECTURE.md § 9` invariants.
+      options:
+        - "No"
+        - "Yes — API / schema change"
+        - "Yes — env or config change"
+        - "Yes — UI URL or route change"
+        - "Yes — MCP tool signature change"
+        - "Yes — Soroban contract interface change"
+        - "Unsure — needs review"
+    validations:
+      required: true
+
+  - type: textarea
+    id: test-plan
+    attributes:
+      label: Test plan
+      description: What proves it works? Name the test files you expect to add or touch.
+      placeholder: |
+        - Unit: `tests/router/score.spec.ts` — scoring deterministic under
+          oracle-snapshot replay.
+        - Integration: `tests/integration/rates-with-reputation.spec.ts` —
+          `/api/rates` returns scorecard fields when feature flag is on.
+        - E2E: `tests/e2e/scorecard-visible.spec.ts` — scorecard renders in
+          RateTable row expansion.
+    validations:
+      required: true
+
+  - type: textarea
+    id: docs-plan
+    attributes:
+      label: Docs plan
+      description: Which docs need to change? PRs that touch behaviour without updating docs get blocked.
+      placeholder: |
+        - `CHANGELOG.md` under `[Unreleased]`.
+        - `docs/ANCHOR_REPUTATION.md` — add "Scorecard" section.
+        - `docs/ARCHITECTURE.md` § 2 — mark scorecard row in component
+          inventory as ✅.
+
+  - type: textarea
+    id: non-goals
+    attributes:
+      label: Explicit non-goals
+      description: What this PR / feature will **not** do. Saves review cycles on scope creep.
+      placeholder: |
+        - Not adding a /anchors leaderboard page — that's a separate issue.
+        - Not changing the composite score formula — that lives in #159.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched open and closed issues and `issue.md`; this is not a duplicate
+          required: true
+        - label: This is not already on [`docs/ROADMAP.md`](../blob/main/docs/ROADMAP.md) (or if it is, I've linked the wave above)
+          required: true
+        - label: I've read the relevant sections of [`docs/ARCHITECTURE.md`](../blob/main/docs/ARCHITECTURE.md)
+          required: true
+        - label: This proposal respects the non-custody invariants in [`docs/ARCHITECTURE.md § 9`](../blob/main/docs/ARCHITECTURE.md) — no key custody, no fund custody, no fiat touching
+          required: true

@@ -1,0 +1,195 @@
+name: 🔌 Anchor onboarding
+description: Apply to list a Stellar anchor on Stellar Intel. Anchor operators and community integrators both use this.
+title: "[ANCHOR] Onboard <anchor name>"
+labels:
+  - anchor
+  - onboarding
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Welcome. Listing on Stellar Intel is **carrot, not stick**: we
+        aggregate your quotes, we publish your track record to a public
+        Soroban oracle, and we do not custody user funds. There is no
+        listing fee and no exclusivity ask.
+
+        Before you submit, please read:
+        - [`docs/ANCHOR_ONBOARDING.md`](../blob/main/docs/ANCHOR_ONBOARDING.md)
+        - [`docs/ANCHOR_REPUTATION.md`](../blob/main/docs/ANCHOR_REPUTATION.md) — how scoring works
+        - [`docs/NON_CUSTODY.md`](../blob/main/docs/NON_CUSTODY.md) — custody boundary
+
+        We'll respond within one business week.
+
+  - type: input
+    id: anchor-name
+    attributes:
+      label: Anchor display name
+      description: The name users will see in the rate table. Keep it short and recognisable.
+      placeholder: "MoneyGram"
+    validations:
+      required: true
+
+  - type: input
+    id: home-domain
+    attributes:
+      label: Home domain
+      description: The domain that hosts your `stellar.toml` at `/.well-known/stellar.toml`.
+      placeholder: "stellar.moneygram.com"
+    validations:
+      required: true
+
+  - type: input
+    id: toml-url
+    attributes:
+      label: Full stellar.toml URL (for our parser to hit)
+      description: We validate SEP-1 parse, `TRANSFER_SERVER_SEP0024`, `WEB_AUTH_ENDPOINT`, and signing key presence.
+      placeholder: "https://stellar.moneygram.com/.well-known/stellar.toml"
+    validations:
+      required: true
+
+  - type: input
+    id: asset-code
+    attributes:
+      label: Primary asset code
+      description: "The Stellar asset users withdraw in. Today: `USDC`; `USDT` supported in v1.1+."
+      placeholder: "USDC"
+    validations:
+      required: true
+
+  - type: input
+    id: asset-issuer
+    attributes:
+      label: Asset issuer public key
+      description: The `G…` account that issues the asset. For USDC, Circle's canonical issuer.
+      placeholder: "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: corridors
+    attributes:
+      label: Corridors you support
+      description: Check every corridor you can settle fiat on. We'll register your anchor against these in `lib/stellar/anchors.ts`.
+      options:
+        - label: USDC → NGN (Nigeria)
+        - label: USDC → KES (Kenya)
+        - label: USDC → GHS (Ghana)
+        - label: USDC → MXN (Mexico)
+        - label: USDC → BRL (Brazil)
+        - label: USDC → ARS (Argentina)
+        - label: USDC → PEN (Peru)
+        - label: USDC → XOF (Senegal / Côte d'Ivoire) — v1.1 target
+        - label: USDC → ZAR (South Africa) — v1.1 target
+        - label: USDC → PHP (Philippines) — v1.2 target
+        - label: USDC → IDR (Indonesia) — v1.2 target
+        - label: Other (name in the notes section below)
+
+  - type: checkboxes
+    id: seps
+    attributes:
+      label: SEPs implemented
+      description: We require SEP-1, SEP-10, and SEP-24 at minimum. SEP-38 firm quotes are required from v1.1 onward.
+      options:
+        - label: SEP-1 — stellar.toml
+          required: true
+        - label: SEP-6 — deposit / withdraw API
+        - label: SEP-10 — web authentication
+          required: true
+        - label: SEP-12 — KYC API
+        - label: SEP-24 — interactive hosted deposit / withdraw
+          required: true
+        - label: SEP-31 — cross-border payments
+        - label: SEP-38 — firm-quote RFQ (required v1.1+)
+
+  - type: dropdown
+    id: kyc-model
+    attributes:
+      label: KYC model
+      options:
+        - Anchor-hosted (standard SEP-24 interactive popup)
+        - Anchor-hosted, with non-interactive fast-path for returning users
+        - SEP-12 field submission (non-interactive)
+        - Partner KYC provider with SSO
+        - Other (describe below)
+    validations:
+      required: true
+
+  - type: textarea
+    id: regions
+    attributes:
+      label: Regions served (senders vs receivers)
+      description: Senders ≠ receivers. Be specific, because rate-table filtering depends on this.
+      placeholder: |
+        Senders: all (no residency restriction).
+        Receivers: Nigerian residents with a BVN-linked bank account.
+    validations:
+      required: true
+
+  - type: textarea
+    id: fees
+    attributes:
+      label: Fee + rate model
+      description: How do you price? Flat fee? Percent? Mid-market + spread? Is the spread corridor-dependent?
+      placeholder: |
+        Flat $0.50 USDC + 0.5% spread over Binance mid-market. Floor: ₦1,500
+        per USDC. No tiered discounts.
+    validations:
+      required: true
+
+  - type: input
+    id: settle-latency
+    attributes:
+      label: Typical settlement latency to beneficiary
+      description: From `pending_external` to fiat landing. We'll verify against real intents during reputation bootstrap.
+      placeholder: "p50: 4 minutes; p95: 18 minutes; p99: 90 minutes"
+    validations:
+      required: true
+
+  - type: input
+    id: contact-email
+    attributes:
+      label: Technical contact email
+      description: Someone on your side who can answer stellar.toml, SEP-10, or KYC questions within a business day.
+    validations:
+      required: true
+
+  - type: input
+    id: contact-handle
+    attributes:
+      label: Contact handle (Discord / Twitter / Keybase)
+      description: Secondary channel for fast questions. Optional but recommended.
+
+  - type: dropdown
+    id: status-on-sdf
+    attributes:
+      label: SDF anchor directory status
+      description: Are you listed in the Stellar Foundation's anchor directory? Not required, but informs triage.
+      options:
+        - Listed
+        - Pending review
+        - Not listed
+        - Unsure
+    validations:
+      required: true
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes, caveats, special handling
+      description: Anything else we should know before integrating. Rate-limit expectations, sandbox URLs, test account policy, known quirks.
+
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledgements
+      description: All four are required for onboarding.
+      options:
+        - label: Our `stellar.toml` is live at the URL above and parses cleanly with `curl` + `jq` (or equivalent)
+          required: true
+        - label: We understand that Stellar Intel writes every quote / fill / failure / settlement latency to a public Soroban reputation oracle, with our anchor ID attached
+          required: true
+        - label: We understand that Stellar Intel never custodies user funds, user keys, or fiat — and we will handle user custody via our SEP-24 flow as specified
+          required: true
+        - label: We agree to respond to disputes filed against our anchor within five business days, per [`docs/ANCHOR_REPUTATION.md`](../blob/main/docs/ANCHOR_REPUTATION.md)
+          required: true

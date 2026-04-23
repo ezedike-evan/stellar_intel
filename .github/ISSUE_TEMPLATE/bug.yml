@@ -1,0 +1,220 @@
+name: 🐛 Bug report
+description: Something that is supposed to work does not. Prefer this over Discussions when you can reproduce.
+title: "[BUG] [SCOPE] <short description>"
+labels:
+  - bug
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. The two bugs that sank the first grant
+        submission (`#001` Cowrie `exchangeRate = 0`, `#002` `StatusTracker`
+        never mounts) would have been caught sooner with a good bug report.
+        Please fill in every section — "I don't know" is a valid answer.
+
+        Before you submit, please search existing issues:
+        <https://github.com/Ezedike-Evan/stellar-intel/issues?q=is%3Aissue>
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe what you observed. Lead with the symptom, not the theory.
+      placeholder: |
+        When I selected USDC→NGN with Cowrie, the exchange rate column rendered
+        as "₦0" per USDC, making the row unusable.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      description: The behaviour that would have been correct.
+      placeholder: |
+        A non-zero exchange rate, sourced either from the anchor's SEP-38
+        quote or (today) the SEP-24 /fee endpoint plus the indicative rate.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Exact clicks, inputs, and URLs. A reviewer should be able to reproduce without you in the room.
+      value: |
+        1. Open <https://stellar-intel.vercel.app/offramp>
+        2. Connect Freighter on mainnet
+        3. Select corridor `USDC → NGN (Nigeria)`
+        4. Enter amount `100`
+        5. Observe: …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: |
+        **critical** = blocks off-ramp or loses user funds in any scenario.
+        **high** = blocks a supported corridor or a core SEP flow.
+        **medium** = degraded UX but a workaround exists.
+        **low** = cosmetic or edge-case.
+      options:
+        - critical — blocks off-ramp or risks funds
+        - high — blocks a supported corridor or core flow
+        - medium — degraded UX with a workaround
+        - low — cosmetic / edge-case
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope (Conventional-Commits area)
+      description: Match the scope the PR will use, so the fix links cleanly. See `.github/workflows/pr-title.yml`.
+      multiple: true
+      options:
+        - offramp
+        - anchors
+        - sep1
+        - sep10
+        - sep24
+        - sep38
+        - horizon
+        - freighter
+        - router
+        - intent
+        - reputation
+        - oracle
+        - mcp
+        - api
+        - ui
+        - types
+        - tests
+        - ci
+        - ops
+        - docs
+    validations:
+      required: true
+
+  - type: dropdown
+    id: anchor
+    attributes:
+      label: Affected anchor(s)
+      description: Which anchor integration surfaces this bug? Pick `N/A` if anchor-independent.
+      multiple: true
+      options:
+        - MoneyGram
+        - Cowrie
+        - Anclap
+        - Other (name in description)
+        - N/A — not anchor-specific
+    validations:
+      required: true
+
+  - type: dropdown
+    id: corridor
+    attributes:
+      label: Affected corridor(s)
+      description: Which corridors surface this bug? Pick `all` if global, `N/A` if corridor-independent.
+      multiple: true
+      options:
+        - USDC → NGN (Nigeria)
+        - USDC → KES (Kenya)
+        - USDC → GHS (Ghana)
+        - USDC → MXN (Mexico)
+        - USDC → BRL (Brazil)
+        - USDC → ARS (Argentina)
+        - USDC → PEN (Peru)
+        - all corridors
+        - N/A — not corridor-specific
+    validations:
+      required: true
+
+  - type: dropdown
+    id: sep
+    attributes:
+      label: SEP surface
+      description: Which Stellar Ecosystem Proposal's flow does the bug live in? `none` if the bug is pre-SEP (UI, config, env).
+      multiple: true
+      options:
+        - SEP-1 (stellar.toml discovery)
+        - SEP-10 (web auth / JWT)
+        - SEP-24 (interactive withdraw / deposit)
+        - SEP-38 (firm quote RFQ)
+        - Horizon (on-ledger payment)
+        - none
+    validations:
+      required: true
+
+  - type: input
+    id: commit
+    attributes:
+      label: Commit / version
+      description: Git SHA (`git rev-parse HEAD`) or version tag you reproduced on. `main` is not enough.
+      placeholder: "e.g. 45a82eb or v1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser + OS
+      placeholder: "Chrome 126 on macOS 14.5"
+    validations:
+      required: true
+
+  - type: input
+    id: freighter
+    attributes:
+      label: Freighter version (if wallet involved)
+      description: Shown in the Freighter extension settings. Put `N/A` if wallet is not involved.
+      placeholder: "5.7.0"
+
+  - type: dropdown
+    id: network
+    attributes:
+      label: Stellar network
+      options:
+        - mainnet
+        - testnet
+        - futurenet
+        - standalone / local
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs / console errors
+      description: Paste the exact error text. Redact any JWT, account ID, or KYC data.
+      render: shell
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or recording
+      description: Drag-drop or paste. For state-dependent bugs a short Loom or GIF is worth a thousand lines of repro.
+
+  - type: input
+    id: stellar-tx
+    attributes:
+      label: Stellar transaction hash (if applicable)
+      description: If the bug involved an on-ledger transaction, paste the hash so we can inspect it on Stellar Expert.
+      placeholder: "e.g. abc123… or N/A"
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight
+      options:
+        - label: I searched the open and closed issues and this is not a duplicate
+          required: true
+        - label: I can reproduce on `main` (or I noted the specific commit above)
+          required: true
+        - label: I have redacted any sensitive data (JWTs, account IDs, KYC, bank details) from logs and screenshots
+          required: true
+        - label: I have read [`CONTRIBUTING.md`](../blob/main/CONTRIBUTING.md)
+          required: true

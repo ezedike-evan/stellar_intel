@@ -1,0 +1,201 @@
+name: 🌱 Good first issue (maintainer-authored)
+description: Use this to publish a well-scoped task newcomers can pick up. Restricted to maintainers — contributors should use bug / feature / docs instead.
+title: "[GOOD-FIRST-ISSUE] [SCOPE] <short task>"
+labels:
+  - good-first-issue
+  - help-wanted
+  - triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **For maintainers only.** This template drafts a good-first-issue
+        that a new contributor can pick up without asking questions.
+        The goal is that someone can go from `git clone` to open PR in
+        under an afternoon, with nothing hidden.
+
+        A well-shaped good-first-issue has five properties:
+
+        1. **Small.** One file, one function, or one component.
+        2. **Unblocked.** No dependencies on in-flight work.
+        3. **Reviewer-ready.** Acceptance criteria are unambiguous.
+        4. **Educational.** The contributor learns a concept they'll use again.
+        5. **Discardable.** If it stalls for a week, we can re-open for another contributor without context loss.
+
+        If your ticket fails any of these, publish it as a feature / bug instead.
+
+  - type: textarea
+    id: one-liner
+    attributes:
+      label: One-line task
+      description: The full task, in a single sentence. If you need two sentences, the ticket is too big.
+      placeholder: |
+        Add an exponential backoff to `useWithdrawStatus` so consecutive
+        `/transaction` 5xx responses don't hammer the anchor.
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is this a good first issue?
+      description: Context a newcomer doesn't have. Why does the codebase look the way it does here?
+      placeholder: |
+        `useWithdrawStatus` is an SWR hook that polls an anchor's
+        `/transaction?id=…` endpoint every 5 seconds until a terminal
+        state. Today it retries on the same cadence regardless of error —
+        fine in the happy path, but on a degraded anchor it doubles the
+        noise. Adding exponential backoff is a self-contained change that
+        teaches the pattern we want applied across every external fetch
+        in `lib/stellar/*`.
+    validations:
+      required: true
+
+  - type: textarea
+    id: files
+    attributes:
+      label: Files to change
+      description: Every file the contributor will touch. Be specific — a newcomer should not have to grep the repo to find them.
+      placeholder: |
+        - `hooks/useWithdrawStatus.ts` — add backoff logic
+        - `hooks/__tests__/useWithdrawStatus.spec.ts` — add a regression test
+        - `CHANGELOG.md` — entry under `[Unreleased]`
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Bulleted, testable. A reviewer should be able to check every box without debate.
+      placeholder: |
+        - After three consecutive failed `/transaction` requests, the next
+          request waits at least 10 seconds, then 20, then 40, capped at 60.
+        - A successful response resets the delay to the baseline 5s.
+        - Terminal states still stop polling.
+        - The new test fails on `main` and passes with the change applied.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: estimate
+    attributes:
+      label: Estimated time
+      description: A realistic range for someone who has opened the repo for the first time today.
+      options:
+        - "< 1 hour"
+        - "1–3 hours"
+        - "3–6 hours"
+        - "half day"
+        - "one full day"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: prereqs
+    attributes:
+      label: Pre-requisites / skills
+      description: What a contributor needs to already know. Keep this permissive — everything else we'll teach.
+      options:
+        - label: TypeScript basics (types, async/await)
+        - label: React hooks
+        - label: SWR or similar data-fetching library
+        - label: Familiarity with Tailwind CSS
+        - label: Vitest + Testing Library
+        - label: Stellar SDK familiarity
+        - label: Soroban / Rust familiarity
+        - label: Mermaid diagrams (for docs-adjacent first issues)
+        - label: None — reading help will carry you
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope (Conventional-Commits area)
+      multiple: true
+      options:
+        - offramp
+        - anchors
+        - sep1
+        - sep10
+        - sep24
+        - sep38
+        - horizon
+        - freighter
+        - router
+        - intent
+        - reputation
+        - oracle
+        - mcp
+        - sdk
+        - api
+        - ui
+        - types
+        - tests
+        - ci
+        - ops
+        - docs
+    validations:
+      required: true
+
+  - type: dropdown
+    id: wave
+    attributes:
+      label: Wave / milestone
+      description: Where does this sit in [`docs/ROADMAP.md`](../blob/main/docs/ROADMAP.md)?
+      options:
+        - v1.0 — Core Executable
+        - v1.1 — Hardening + SEP-38
+        - v1.2 — Router + Seeds
+        - v1.3 — Polish + Release Gate
+        - v2.0 — Reputation as Product Surface
+        - v2.1 — Soroban Oracle Live
+        - v2.2 — Multi-Anchor Split Routing
+        - v2.3 — Public Reputation API + Bootstrap
+        - cross-cutting (docs, ops, observability)
+    validations:
+      required: true
+
+  - type: input
+    id: mentor
+    attributes:
+      label: Mentor (who to ping if stuck)
+      description: A maintainer GitHub handle. This is the person who commits to answering questions in a business day.
+      placeholder: "@Ezedike-Evan"
+    validations:
+      required: true
+
+  - type: textarea
+    id: hints
+    attributes:
+      label: Hints
+      description: Optional. Pointers that unstick the most common dead-ends without giving away the answer.
+      placeholder: |
+        - SWR exposes an `onErrorRetry` option — that's the hook.
+        - Look at how `lib/stellar/sep24.ts` already uses an
+          `AbortController` timeout for the shape you want on the backoff.
+        - Do NOT add backoff by sleeping inside the SWR fetcher — return
+          promptly and let `onErrorRetry` schedule the next try.
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Explicit out-of-scope
+      description: What the contributor should **not** do in this ticket. Prevents well-meaning scope-creep PRs.
+      placeholder: |
+        - Do not refactor `useAnchorRates` — this ticket is about status
+          polling only.
+        - Do not add Sentry reporting — that's a separate follow-up issue.
+
+  - type: checkboxes
+    id: meta
+    attributes:
+      label: Maintainer meta
+      options:
+        - label: I have verified the acceptance criteria are independently testable
+          required: true
+        - label: I have named a mentor who will respond in one business day
+          required: true
+        - label: I have confirmed this is not blocked by any in-flight PR
+          required: true
+        - label: I will apply the `good-first-issue` label on triage
+          required: true
