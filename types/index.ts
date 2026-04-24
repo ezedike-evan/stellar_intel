@@ -55,13 +55,19 @@ export interface FreighterState {
 
 // ─── SEP-1 ────────────────────────────────────────────────────────────────────
 
-/** Relevant fields from a stellar.toml file resolved via SEP-1. */
-export interface Sep1TomlData {
-  TRANSFER_SERVER_SEP0024: string
-  WEB_AUTH_ENDPOINT: string
-  SIGNING_KEY?: string
-  CURRENCIES?: Array<{ code: string; issuer?: string }>
+/** A normalized stellar.toml response for an anchor resolved via SEP-1. */
+export interface ResolvedAnchorToml {
+  domain: string
+  TRANSFER_SERVER_SEP0024: string | null
+  ANCHOR_QUOTE_SERVER: string | null
+  WEB_AUTH_ENDPOINT: string | null
+  SIGNING_KEY: string | null
+  NETWORK_PASSPHRASE: string | null
+  CURRENCIES: Array<{ code: string; issuer?: string }>
 }
+
+/** Backwards-compatible alias for older SEP-1 callers. */
+export type Sep1TomlData = ResolvedAnchorToml
 
 // ─── SEP-10 ───────────────────────────────────────────────────────────────────
 
