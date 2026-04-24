@@ -3,6 +3,7 @@ import type { FreighterState } from '@/types'
 
 // Freighter API is a browser extension — import lazily to avoid SSR errors
 async function getFreighterApi() {
+  if (typeof window === 'undefined') throw new Error('SSR')
   const mod = await import('@stellar/freighter-api')
   return mod
 }
