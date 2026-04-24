@@ -32,12 +32,30 @@ export const USDY_ASSET: StellarAsset = {
 export const SUPPORTED_ASSETS: StellarAsset[] = [USDC_ASSET, XLM_ASSET, EURC_ASSET, USDY_ASSET];
 
 export const SUPPORTED_COUNTRIES: Country[] = [
+  // Africa
   { code: 'NG', name: 'Nigeria', currency: 'NGN', currencySymbol: '₦', flag: '🇳🇬' },
   { code: 'KE', name: 'Kenya', currency: 'KES', currencySymbol: 'KSh', flag: '🇰🇪' },
   { code: 'GH', name: 'Ghana', currency: 'GHS', currencySymbol: 'GH₵', flag: '🇬🇭' },
-  { code: 'PH', name: 'Philippines', currency: 'PHP', currencySymbol: '₱', flag: '🇵🇭' },
+  { code: 'UG', name: 'Uganda', currency: 'UGX', currencySymbol: 'USh', flag: '🇺🇬' },
+  { code: 'TZ', name: 'Tanzania', currency: 'TZS', currencySymbol: 'TSh', flag: '🇹🇿' },
+  { code: 'SN', name: 'Senegal', currency: 'XOF', currencySymbol: 'CFA', flag: '🇸🇳' },
+  { code: 'ZA', name: 'South Africa', currency: 'ZAR', currencySymbol: 'R', flag: '🇿🇦' },
+  // Latin America
   { code: 'MX', name: 'Mexico', currency: 'MXN', currencySymbol: '$', flag: '🇲🇽' },
   { code: 'BR', name: 'Brazil', currency: 'BRL', currencySymbol: 'R$', flag: '🇧🇷' },
+  { code: 'AR', name: 'Argentina', currency: 'ARS', currencySymbol: '$', flag: '🇦🇷' },
+  { code: 'PE', name: 'Peru', currency: 'PEN', currencySymbol: 'S/', flag: '🇵🇪' },
+  { code: 'CO', name: 'Colombia', currency: 'COP', currencySymbol: '$', flag: '🇨🇴' },
+  { code: 'CL', name: 'Chile', currency: 'CLP', currencySymbol: '$', flag: '🇨🇱' },
+  // Southeast Asia
+  { code: 'PH', name: 'Philippines', currency: 'PHP', currencySymbol: '₱', flag: '🇵🇭' },
+  { code: 'ID', name: 'Indonesia', currency: 'IDR', currencySymbol: 'Rp', flag: '🇮🇩' },
+  { code: 'VN', name: 'Vietnam', currency: 'VND', currencySymbol: '₫', flag: '🇻🇳' },
+  { code: 'TH', name: 'Thailand', currency: 'THB', currencySymbol: '฿', flag: '🇹🇭' },
+  // South Asia
+  { code: 'IN', name: 'India', currency: 'INR', currencySymbol: '₹', flag: '🇮🇳' },
+  { code: 'PK', name: 'Pakistan', currency: 'PKR', currencySymbol: '₨', flag: '🇵🇰' },
+  // Europe (existing)
   { code: 'DE', name: 'Germany', currency: 'EUR', currencySymbol: '€', flag: '🇩🇪' },
 ];
 

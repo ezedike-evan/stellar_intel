@@ -119,15 +119,137 @@ const CORRIDOR_PEN: Corridor = {
   countryName: 'Peru',
 }
 
+const CORRIDOR_UGX: Corridor = {
+  id: 'usdc-ugx',
+  from: 'USDC',
+  to: 'UGX',
+  countryCode: 'UG',
+  countryName: 'Uganda',
+}
+
+const CORRIDOR_TZS: Corridor = {
+  id: 'usdc-tzs',
+  from: 'USDC',
+  to: 'TZS',
+  countryCode: 'TZ',
+  countryName: 'Tanzania',
+}
+
+const CORRIDOR_XOF: Corridor = {
+  id: 'usdc-xof',
+  from: 'USDC',
+  to: 'XOF',
+  countryCode: 'SN',
+  countryName: 'Senegal',
+}
+
+const CORRIDOR_ZAR: Corridor = {
+  id: 'usdc-zar',
+  from: 'USDC',
+  to: 'ZAR',
+  countryCode: 'ZA',
+  countryName: 'South Africa',
+}
+
+const CORRIDOR_COP: Corridor = {
+  id: 'usdc-cop',
+  from: 'USDC',
+  to: 'COP',
+  countryCode: 'CO',
+  countryName: 'Colombia',
+}
+
+const CORRIDOR_CLP: Corridor = {
+  id: 'usdc-clp',
+  from: 'USDC',
+  to: 'CLP',
+  countryCode: 'CL',
+  countryName: 'Chile',
+}
+
+const CORRIDOR_IDR: Corridor = {
+  id: 'usdc-idr',
+  from: 'USDC',
+  to: 'IDR',
+  countryCode: 'ID',
+  countryName: 'Indonesia',
+}
+
+const CORRIDOR_VND: Corridor = {
+  id: 'usdc-vnd',
+  from: 'USDC',
+  to: 'VND',
+  countryCode: 'VN',
+  countryName: 'Vietnam',
+}
+
+const CORRIDOR_THB: Corridor = {
+  id: 'usdc-thb',
+  from: 'USDC',
+  to: 'THB',
+  countryCode: 'TH',
+  countryName: 'Thailand',
+}
+
+const CORRIDOR_INR: Corridor = {
+  id: 'usdc-inr',
+  from: 'USDC',
+  to: 'INR',
+  countryCode: 'IN',
+  countryName: 'India',
+}
+
+const CORRIDOR_PKR: Corridor = {
+  id: 'usdc-pkr',
+  from: 'USDC',
+  to: 'PKR',
+  countryCode: 'PK',
+  countryName: 'Pakistan',
+}
+
+const CORRIDOR_PHP: Corridor = {
+  id: 'usdc-php',
+  from: 'USDC',
+  to: 'PHP',
+  countryCode: 'PH',
+  countryName: 'Philippines',
+}
+
+const CORRIDOR_EUR: Corridor = {
+  id: 'usdc-eur',
+  from: 'USDC',
+  to: 'EUR',
+  countryCode: 'DE',
+  countryName: 'Germany',
+}
+
 /** All supported corridors. */
 export const CORRIDORS: Corridor[] = [
+  // Africa
   CORRIDOR_NGN,
   CORRIDOR_KES,
   CORRIDOR_GHS,
+  CORRIDOR_UGX,
+  CORRIDOR_TZS,
+  CORRIDOR_XOF,
+  CORRIDOR_ZAR,
+  // Latin America
   CORRIDOR_MXN,
   CORRIDOR_BRL,
   CORRIDOR_ARS,
   CORRIDOR_PEN,
+  CORRIDOR_COP,
+  CORRIDOR_CLP,
+  // Southeast Asia
+  CORRIDOR_PHP,
+  CORRIDOR_IDR,
+  CORRIDOR_VND,
+  CORRIDOR_THB,
+  // South Asia
+  CORRIDOR_INR,
+  CORRIDOR_PKR,
+  // Europe
+  CORRIDOR_EUR,
 ] as const
 
 // ─── Lookup helpers ───────────────────────────────────────────────────────────
