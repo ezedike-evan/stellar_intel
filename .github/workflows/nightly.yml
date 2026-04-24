@@ -1,0 +1,119 @@
+name: Nightly Integrity
+
+on:
+  schedule:
+    # 04:17 UTC nightly — off-peak, avoids collisions with deploy/release runs.
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  anchor-domains:
+    name: Anchor TOML resolution
+    runs-on: ubuntu-latest
+    outputs:
+      summary: ${{ steps.probe.outputs.summary }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+
+      - name: Resolve every anchor .well-known/stellar.toml
+        id: probe
+        run: |
+          # Extract anchor domains from constants/index.ts so we do not drift
+          # from the app's source of truth.
+          mapfile -t DOMAINS < <(node -e "
+            const path = require('path');
+            const fs = require('fs');
+            const src = fs.readFileSync('constants/index.ts', 'utf8');
+            const re = /domain:\s*['\"]([^'\"]+)['\"]/g;
+            const seen = new Set();
+            let m;
+            while ((m = re.exec(src))) seen.add(m[1]);
+            for (const d of seen) console.log(d);
+          ")
+
+          if [ ${#DOMAINS[@]} -eq 0 ]; then
+            echo "::warning::No anchor domains found in constants/index.ts; skipping"
+            echo "summary=no-domains-detected" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          FAIL=0
+          REPORT=""
+          for D in "${DOMAINS[@]}"; do
+            URL="https://${D}/.well-known/stellar.toml"
+            CODE=$(curl -s -o /tmp/toml -w "%{http_code}" --max-time 15 "$URL" || echo "000")
+            HAS_TRANSFER=$(grep -Eq '^TRANSFER_SERVER_SEP0024' /tmp/toml && echo yes || echo no)
+            LINE="$D | HTTP $CODE | SEP-24: $HAS_TRANSFER"
+            echo "$LINE"
+            REPORT="${REPORT}${LINE}\n"
+            if [ "$CODE" != "200" ] || [ "$HAS_TRANSFER" != "yes" ]; then
+              FAIL=$((FAIL + 1))
+            fi
+          done
+
+          {
+            echo "summary<<EOF"
+            echo -e "$REPORT"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+          if [ "$FAIL" -gt 0 ]; then
+            echo "::warning::$FAIL anchor domain(s) failed the nightly probe"
+          fi
+
+  reputation-integrity:
+    name: Reputation aggregate integrity
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+
+      - name: Run reputation integrity check
+        run: |
+          if [ -f "scripts/reputation-integrity.mjs" ]; then
+            node scripts/reputation-integrity.mjs
+          else
+            echo "No reputation integrity script yet — placeholder for v2."
+            echo "Tracked in issue.md §168 (composite score test vectors)."
+          fi
+
+  open-issue-on-failure:
+    name: Open tracking issue on failure
+    runs-on: ubuntu-latest
+    needs: [anchor-domains, reputation-integrity]
+    if: failure()
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `[nightly] integrity failure — ${new Date().toISOString().slice(0,10)}`;
+            const body = [
+              'One or more nightly integrity jobs failed.',
+              '',
+              `- Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+              '',
+              'Anchor summary (last run):',
+              '```',
+              `${{ needs.anchor-domains.outputs.summary }}`,
+              '```',
+            ].join('\n');
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              body,
+              labels: ['bug', 'needs-triage', 'module/ops'],
+            });
