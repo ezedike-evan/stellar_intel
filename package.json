@@ -6,13 +6,26 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "eslint --max-warnings 0",
+    "lint:fix": "eslint --fix",
+    "typecheck": "tsc --noEmit",
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"**/*.{ts,tsx,mjs,json,css,md}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,mjs,json,css,md}\"",
     "test": "vitest run",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage"
+    "test:coverage": "vitest --coverage",
+    "test:release": "npm run typecheck && npm run lint && npm run format:check && npm run test && npm run build",
+    "prepare": "husky || true"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mjs}": [
+      "eslint --fix --max-warnings 0",
+      "prettier --write"
+    ],
+    "*.{json,css,md,yml,yaml}": [
+      "prettier --write"
+    ]
   },
   "dependencies": {
     "@stellar/freighter-api": "^6.0.1",
