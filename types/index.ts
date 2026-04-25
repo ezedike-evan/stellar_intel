@@ -67,8 +67,8 @@ export interface AnchorCapabilities {
 export interface Sep1TomlData {
   TRANSFER_SERVER_SEP0024: string | undefined
   WEB_AUTH_ENDPOINT: string | undefined
-  SIGNING_KEY: string | undefined
-  CURRENCIES: Array<{ code: string; issuer?: string }> | undefined
+  SIGNING_KEY?: string
+  CURRENCIES?: Array<{ code: string; issuer?: string }>
   capabilities: AnchorCapabilities
 }
 

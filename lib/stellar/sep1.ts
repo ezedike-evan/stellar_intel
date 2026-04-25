@@ -39,6 +39,7 @@ export async function resolveToml(domain: string): Promise<Sep1TomlData> {
   const webAuthEndpoint = typeof raw['WEB_AUTH_ENDPOINT'] === 'string' ? raw['WEB_AUTH_ENDPOINT'] : undefined
   const signingKey = typeof raw['SIGNING_KEY'] === 'string' ? raw['SIGNING_KEY'] : undefined
   const quoteServer = typeof raw['QUOTE_SERVER'] === 'string' ? raw['QUOTE_SERVER'] : undefined
+  const kycServer = typeof raw['KYC_SERVER'] === 'string' ? raw['KYC_SERVER'] : undefined
 
   const data: Sep1TomlData = {
     TRANSFER_SERVER_SEP0024: transferServer,
@@ -51,7 +52,7 @@ export async function resolveToml(domain: string): Promise<Sep1TomlData> {
       sep10: Boolean(webAuthEndpoint),
       sep24: Boolean(transferServer),
       sep38: Boolean(quoteServer),
-      sep12: Boolean(signingKey),
+      sep12: Boolean(kycServer),
     },
   }
 
