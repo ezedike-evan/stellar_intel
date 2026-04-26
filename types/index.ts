@@ -77,9 +77,7 @@ export interface Sep1TomlData {
 }
 
 /** A resolved anchor with protocol capabilities attached. */
-export interface ResolvedAnchor extends Anchor {
-  capabilities: AnchorCapabilities;
-}
+export type ResolvedAnchor = Sep1TomlData;
 
 // ─── SEP-10 ───────────────────────────────────────────────────────────────────
 
@@ -145,15 +143,6 @@ export interface WithdrawStatus {
   amountFee?: string | undefined;
   updatedAt: Date;
   stellarTransactionId?: string | undefined;
-}
-
-// ─── Post-execute handoff ─────────────────────────────────────────────────────
-
-/** Data passed from ExecuteDrawer to the page after a successful withdrawal initiation. */
-export interface WithdrawHandoffPayload {
-  transactionId: string;
-  transferServer: string;
-  jwt: string;
 }
 
 // ─── API ──────────────────────────────────────────────────────────────────────

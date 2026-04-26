@@ -14,6 +14,9 @@
  */
 
 /** @deprecated See module-level JSDoc. */
-export function getEstimatedRate(_corridorId: string, _amount: string): null {
-  return null;
+export function getEstimatedRate(
+  _corridorId: string,
+  _amount: string
+): null {
+  return null
 }

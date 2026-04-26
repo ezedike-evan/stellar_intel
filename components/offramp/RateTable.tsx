@@ -117,9 +117,7 @@ export function RateTable({ rates, isLoading, error, onSelectAnchor }: RateTable
                       : '—'}
                   </td>
                   <td className="px-4 py-3 text-right font-medium text-gray-900 dark:text-white">
-                    {rate.totalReceived !== null
-                      ? formatCurrency(rate.totalReceived, currency)
-                      : '—'}
+                    {rate.totalReceived !== null ? formatCurrency(rate.totalReceived, currency) : '—'}
                   </td>
                   <td className="px-4 py-3 text-right">
                     <button

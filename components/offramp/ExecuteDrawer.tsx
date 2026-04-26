@@ -41,19 +41,11 @@ interface ExecuteDrawerProps {
   amount: string;
   publicKey: string;
   onClose: () => void;
-  /** Called once the Stellar payment is submitted; closes the drawer and hands tracking data to the page. */
-  onExecuteStarted: (transactionId: string, transferServer: string, jwt: string) => void;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function ExecuteDrawer({
-  rate,
-  amount,
-  publicKey,
-  onClose,
-  onExecuteStarted,
-}: ExecuteDrawerProps) {
+export function ExecuteDrawer({ rate, amount, publicKey, onClose }: ExecuteDrawerProps) {
   const [step, setStep] = useState<Step>('idle');
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
@@ -108,10 +100,6 @@ export function ExecuteDrawer({
       const result = await signAndSubmitPayment(tx);
       setTxHash(result.hash ?? null);
       setStep('done');
-
-      // Hand tracking data to the page, then close so StatusTracker owns the viewport.
-      onExecuteStarted(transactionId, transferServer, auth.jwt);
-      onClose();
     } catch (err) {
       setErrorMsg((err as Error).message ?? 'Unknown error');
       setStep('error');
@@ -178,7 +166,7 @@ export function ExecuteDrawer({
                 <div className="flex justify-between border-t border-gray-100 pt-2 dark:border-gray-700">
                   <dt className="font-medium text-gray-700 dark:text-gray-300">You receive</dt>
                   <dd className="font-semibold text-green-600 dark:text-green-400">
-                    {(rate.totalReceived ?? 0).toLocaleString()}{' '}
+                    {rate.totalReceived.toLocaleString()}{' '}
                     {rate.corridorId.split('-')[1]?.toUpperCase()}
                   </dd>
                 </div>

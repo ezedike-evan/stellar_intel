@@ -1,15 +1,16 @@
 import {
   Horizon,
   TransactionBuilder,
+  Networks,
   Asset,
   Operation,
   Memo,
   BASE_FEE,
 } from '@stellar/stellar-sdk';
-import { config, NETWORK_PASSPHRASE, getHorizonServer } from '@/lib/config';
+import { HORIZON_URL } from '@/constants';
 import type { SwapRoute, StellarAsset } from '@/types';
 
-export const horizonServer = getHorizonServer();
+export const horizonServer = new Horizon.Server(HORIZON_URL);
 
 const MAX_FEE_STROOPS = 10_000;
 
@@ -66,7 +67,7 @@ export async function buildWithdrawPayment(
 
   const builder = new TransactionBuilder(account, {
     fee,
-    networkPassphrase: NETWORK_PASSPHRASE,
+    networkPassphrase: Networks.PUBLIC,
   }).setTimeout(180);
 
   builder.addOperation(
@@ -103,14 +104,14 @@ export async function signAndSubmitPayment(
   const { signTransaction } = await import('@stellar/freighter-api');
 
   const xdr = transaction.toXDR();
-  const signResult = await signTransaction(xdr, { networkPassphrase: NETWORK_PASSPHRASE });
+  const signResult = await signTransaction(xdr, { networkPassphrase: Networks.PUBLIC });
 
   if (signResult.error) {
     throw new Error('User rejected the payment transaction');
   }
 
   const { TransactionBuilder: TB } = await import('@stellar/stellar-sdk');
-  const signedTx = TB.fromXDR(signResult.signedTxXdr, NETWORK_PASSPHRASE);
+  const signedTx = TB.fromXDR(signResult.signedTxXdr, Networks.PUBLIC);
 
   try {
     return await horizonServer.submitTransaction(signedTx);
@@ -180,7 +181,7 @@ export async function getStrictSendPaths(
   fromAmount: number,
   toAssets: StellarAsset[]
 ): Promise<SwapRoute[]> {
-  const url = new URL(`${config.horizonUrl}/paths/strict-send`);
+  const url = new URL(`${HORIZON_URL}/paths/strict-send`);
   url.searchParams.set('source_amount', fromAmount.toString());
 
   if (fromAsset.issuer) {

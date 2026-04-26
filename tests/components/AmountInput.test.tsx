@@ -1,29 +1,19 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { AmountInput } from '@/components/ui/AmountInput';
 
-beforeEach(() => {
-  vi.useFakeTimers();
-});
-
-afterEach(() => {
-  vi.useRealTimers();
-});
-
 describe('AmountInput', () => {
-  it('calls onChange with the typed value after the 250 ms debounce', () => {
+  it('calls onChange with the typed value', () => {
     const onChange = vi.fn();
     render(<AmountInput value="" onChange={onChange} />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: '100' } });
-    vi.advanceTimersByTime(250);
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '100' } });
     expect(onChange).toHaveBeenCalledWith('100');
   });
 
   it('does not call onChange for negative values', () => {
     const onChange = vi.fn();
     render(<AmountInput value="" onChange={onChange} />);
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: '-10' } });
-    vi.advanceTimersByTime(1_000);
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '-10' } });
     expect(onChange).not.toHaveBeenCalled();
   });
 
@@ -32,7 +22,7 @@ describe('AmountInput', () => {
     expect(screen.getByText('USDC')).toBeInTheDocument();
   });
 
-  it('renders the helper text when no error is present', () => {
+  it('renders the helper text', () => {
     render(<AmountInput value="100" onChange={vi.fn()} />);
     expect(screen.getByText(/Enter the amount of USDC/)).toBeInTheDocument();
   });

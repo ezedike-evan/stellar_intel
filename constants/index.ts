@@ -1,6 +1,7 @@
 import type { Country, StellarAsset, Anchor } from '@/types';
 
 export const STELLAR_NETWORK = process.env.NEXT_PUBLIC_STELLAR_NETWORK ?? 'mainnet';
+export const HORIZON_URL = process.env.NEXT_PUBLIC_HORIZON_URL ?? 'https://horizon.stellar.org';
 export const STELLAR_EXPERT_URL =
   process.env.NEXT_PUBLIC_STELLAR_EXPERT_URL ?? 'https://api.stellar.expert/explorer/public';
 

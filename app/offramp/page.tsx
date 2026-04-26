@@ -38,15 +38,6 @@ export default function OfframpPage() {
     setSelectedRate(null);
   }, []);
 
-  const handleExecuteStarted = useCallback(
-    (transactionId: string, transferServer: string, jwt: string) => {
-      setTrackingTransactionId(transactionId);
-      setTrackingTransferServer(transferServer);
-      setTrackingJwt(jwt);
-    },
-    []
-  );
-
   return (
     <div className="mx-auto max-w-4xl space-y-6 px-4 py-8">
       {/* Page header */}
@@ -126,7 +117,6 @@ export default function OfframpPage() {
         amount={amount}
         publicKey={publicKey ?? ''}
         onClose={handleDrawerClose}
-        onExecuteStarted={handleExecuteStarted}
       />
     </div>
   );

@@ -99,8 +99,7 @@ describe('fetchAllAnchorFees', () => {
       'fetch',
       vi.fn(async () => {
         callCount++;
-        if (callCount === 1)
-          return { ok: true, json: async () => ({ fee: '2.00', price: '1580.00' }) };
+        if (callCount === 1) return { ok: true, json: async () => ({ fee: '2.00' }) };
         throw new Error('network error');
       })
     );
