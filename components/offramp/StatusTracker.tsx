@@ -1,16 +1,14 @@
-'use client';
-import type { WithdrawStatusValue } from '@/types';
+'use client'
+import type { WithdrawStatusValue } from '@/types'
 
 interface StatusTrackerProps {
-  transactionId: string;
-  status: WithdrawStatusValue | undefined;
-  amountIn: string | undefined;
-  amountOut: string | undefined;
-  stellarTransactionId: string | undefined;
-  isLoading: boolean;
-  error: string | undefined;
-  onRetryAnchor?: () => void;
-  onAdjust?: () => void;
+  transactionId: string
+  status: WithdrawStatusValue | undefined
+  amountIn: string | undefined
+  amountOut: string | undefined
+  stellarTransactionId: string | undefined
+  isLoading: boolean
+  error: string | undefined
 }
 
 const STATUS_LABELS: Record<WithdrawStatusValue, string> = {
@@ -28,32 +26,25 @@ const STATUS_LABELS: Record<WithdrawStatusValue, string> = {
   no_market: 'No market available',
   too_small: 'Amount too small',
   too_large: 'Amount too large',
-};
+}
 
-const TERMINAL: WithdrawStatusValue[] = [
-  'completed',
-  'refunded',
-  'error',
-  'no_market',
-  'too_small',
-  'too_large',
-];
+const TERMINAL: WithdrawStatusValue[] = ['completed', 'refunded', 'error', 'no_market', 'too_small', 'too_large']
 
 function statusColor(status: WithdrawStatusValue | undefined): string {
-  if (!status) return 'text-gray-500';
-  if (status === 'completed') return 'text-green-600 dark:text-green-400';
+  if (!status) return 'text-gray-500'
+  if (status === 'completed') return 'text-green-600 dark:text-green-400'
   if (['error', 'no_market', 'too_small', 'too_large'].includes(status))
-    return 'text-red-600 dark:text-red-400';
-  if (status === 'refunded') return 'text-yellow-600 dark:text-yellow-400';
-  return 'text-blue-600 dark:text-blue-400';
+    return 'text-red-600 dark:text-red-400'
+  if (status === 'refunded') return 'text-yellow-600 dark:text-yellow-400'
+  return 'text-blue-600 dark:text-blue-400'
 }
 
 function statusDot(status: WithdrawStatusValue | undefined): string {
-  if (!status) return 'bg-gray-300';
-  if (status === 'completed') return 'bg-green-500';
-  if (['error', 'no_market', 'too_small', 'too_large'].includes(status)) return 'bg-red-500';
-  if (status === 'refunded') return 'bg-yellow-500';
-  return 'bg-blue-500 animate-pulse';
+  if (!status) return 'bg-gray-300'
+  if (status === 'completed') return 'bg-green-500'
+  if (['error', 'no_market', 'too_small', 'too_large'].includes(status)) return 'bg-red-500'
+  if (status === 'refunded') return 'bg-yellow-500'
+  return 'bg-blue-500 animate-pulse'
 }
 
 export function StatusTracker({
@@ -64,18 +55,14 @@ export function StatusTracker({
   stellarTransactionId,
   isLoading,
   error,
-  onRetryAnchor,
-  onAdjust,
 }: StatusTrackerProps) {
-  const isTerminal = status ? TERMINAL.includes(status) : false;
+  const isTerminal = status ? TERMINAL.includes(status) : false
 
   return (
     <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-700">
       <div className="mb-4 flex items-start justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
-            Transaction Status
-          </h3>
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Transaction Status</h3>
           <p className="mt-0.5 font-mono text-xs text-gray-400">{transactionId}</p>
         </div>
         {!isTerminal && (
@@ -128,36 +115,6 @@ export function StatusTracker({
           </span>
         </p>
       )}
-
-      {/* Error CTA */}
-      {status === 'error' && onRetryAnchor && (
-        <div className="mt-4 rounded-lg bg-red-50 p-3 dark:bg-red-950/30">
-          <p className="mb-2 text-xs text-red-600 dark:text-red-400">
-            This transaction could not be completed.
-          </p>
-          <button
-            onClick={onRetryAnchor}
-            className="text-xs font-medium text-red-700 underline underline-offset-2 dark:text-red-300"
-          >
-            Try another anchor →
-          </button>
-        </div>
-      )}
-
-      {/* No-market CTA */}
-      {status === 'no_market' && onAdjust && (
-        <div className="mt-4 rounded-lg bg-amber-50 p-3 dark:bg-amber-950/30">
-          <p className="mb-2 text-xs text-amber-700 dark:text-amber-400">
-            No market available for this corridor. Try a smaller amount or a different destination.
-          </p>
-          <button
-            onClick={onAdjust}
-            className="text-xs font-medium text-amber-700 underline underline-offset-2 dark:text-amber-300"
-          >
-            Adjust amount or corridor →
-          </button>
-        </div>
-      )}
     </div>
-  );
+  )
 }

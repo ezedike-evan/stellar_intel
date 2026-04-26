@@ -1,66 +1,32 @@
-'use client';
-import { useState, useEffect, useRef } from 'react';
-
-// Accepts digits, one optional decimal point, and up to 7 decimal places.
-// Rejects scientific notation ('e'/'E'), minus signs, and excess decimals.
-const POSITIVE_DECIMAL_RE = /^\d*\.?\d{0,7}$/;
-
-function validate(raw: string): string | null {
-  if (!POSITIVE_DECIMAL_RE.test(raw)) return null;
-  const n = Number(raw);
-  if (!Number.isFinite(n) || n <= 0) return null;
-  return raw;
-}
+'use client'
 
 interface AmountInputProps {
-  value: string;
-  onChange: (value: string) => void;
-  disabled?: boolean;
+  value: string
+  onChange: (value: string) => void
+  disabled?: boolean
 }
 
+/**
+ * Controlled numeric input for USDC amounts.
+ * Rejects negative values and enforces a maximum of 2 decimal places.
+ */
 export function AmountInput({ value, onChange, disabled }: AmountInputProps) {
-  const [raw, setRaw] = useState(value);
-  const [error, setError] = useState<string | null>(null);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  // Sync display when the parent resets the value externally.
-  useEffect(() => {
-    setRaw(value);
-    setError(null);
-  }, [value]);
-
-  useEffect(() => {
-    return () => {
-      if (debounceRef.current) clearTimeout(debounceRef.current);
-    };
-  }, []);
-
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const input = e.target.value;
-    setRaw(input);
+    const raw = e.target.value
 
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-
-    if (input === '') {
-      setError(null);
-      debounceRef.current = setTimeout(() => onChange(''), 250);
-      return;
+    // Allow empty string for clearing the field
+    if (raw === '') {
+      onChange('')
+      return
     }
 
-    // User is in the middle of typing a decimal (e.g. '100.') — wait for digits.
-    if (input.endsWith('.')) {
-      setError(null);
-      return;
-    }
+    const num = Number(raw)
+    if (num < 0) return
 
-    const validated = validate(input);
-    if (validated === null) {
-      setError('Enter a positive number with up to 7 decimal places');
-      return;
-    }
+    // Enforce max 2 decimal places
+    if (/\.\d{3,}$/.test(raw)) return
 
-    setError(null);
-    debounceRef.current = setTimeout(() => onChange(validated), 250);
+    onChange(raw)
   }
 
   return (
@@ -70,32 +36,21 @@ export function AmountInput({ value, onChange, disabled }: AmountInputProps) {
       </label>
       <div className="relative">
         <input
-          type="text"
-          inputMode="decimal"
-          value={raw}
+          type="number"
+          min={0}
+          step="0.01"
+          value={value}
           onChange={handleChange}
           disabled={disabled}
-          aria-invalid={error !== null}
-          aria-describedby={error ? 'amount-error' : 'amount-hint'}
-          className={`w-full rounded-lg border px-3 py-2.5 pr-16 text-sm text-gray-900 focus:outline-none focus:ring-2 disabled:opacity-50 dark:text-white ${
-            error
-              ? 'border-red-400 bg-red-50 focus:border-red-500 focus:ring-red-500/20 dark:border-red-700 dark:bg-red-950/20'
-              : 'border-gray-300 bg-white focus:border-blue-500 focus:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-800'
-          }`}
+          className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 pr-16 text-sm text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
         />
         <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm font-medium text-gray-400">
           USDC
         </span>
       </div>
-      {error ? (
-        <p id="amount-error" role="alert" className="mt-1 text-xs text-red-500">
-          {error}
-        </p>
-      ) : (
-        <p id="amount-hint" className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-          Enter the amount of USDC to off-ramp
-        </p>
-      )}
+      <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+        Enter the amount of USDC to off-ramp
+      </p>
     </div>
-  );
+  )
 }
