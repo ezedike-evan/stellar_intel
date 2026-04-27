@@ -53,6 +53,7 @@ const RATE: AnchorRate = {
   feeType: 'flat',
   exchangeRate: 1580,
   totalReceived: 154840,
+  source: 'sep24-fee' as const,
   updatedAt: new Date(),
 }
 

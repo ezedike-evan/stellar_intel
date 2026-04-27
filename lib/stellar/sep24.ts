@@ -183,7 +183,7 @@ export async function fetchAllAnchorFees(
         feeType: 'flat',
         exchangeRate,
         totalReceived: computeTotalReceived(amountNum, feeNum, 0, exchangeRate),
-        source: 'live' as const,
+        source: 'sep24-fee' as const,
         updatedAt: new Date(),
       }
     })
