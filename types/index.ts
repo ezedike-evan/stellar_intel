@@ -141,6 +141,15 @@ export interface WithdrawStatus {
   stellarTransactionId?: string
 }
 
+// ─── Post-execute handoff ─────────────────────────────────────────────────────
+
+/** Data passed from ExecuteDrawer to the page after a successful withdrawal initiation. */
+export interface WithdrawHandoffPayload {
+  transactionId: string
+  transferServer: string
+  jwt: string
+}
+
 // ─── API ──────────────────────────────────────────────────────────────────────
 
 /** Shape returned by GET /api/rates. */
