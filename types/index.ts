@@ -31,8 +31,8 @@ export interface AnchorRate {
   exchangeRate: number // local currency units per 1 USDC
   totalReceived: number // computed: (amount - fee) * exchangeRate
   updatedAt: Date
-  /** 'live' = fetched directly from the anchor API; 'estimated' = derived from market rates */
-  source?: 'live' | 'estimated'
+  /** Discriminates the origin of the rate data. */
+  source: 'sep38' | 'sep24-fee' | 'unavailable'
 }
 
 /** The result of comparing all anchor rates for a single corridor. */
