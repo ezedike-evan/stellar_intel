@@ -1,4 +1,5 @@
-import type { Country, StellarAsset, Anchor } from '@/types';
+import type { Country, StellarAsset } from '@/types';
+export { KNOWN_ANCHORS, ANCHORS, CORRIDORS, ANCHOR_HOME_DOMAINS } from './anchors';
 
 export const STELLAR_NETWORK = process.env.NEXT_PUBLIC_STELLAR_NETWORK ?? 'mainnet';
 export const HORIZON_URL = process.env.NEXT_PUBLIC_HORIZON_URL ?? 'https://horizon.stellar.org';
@@ -41,48 +42,6 @@ export const SUPPORTED_COUNTRIES: Country[] = [
   { code: 'DE', name: 'Germany', currency: 'EUR', currencySymbol: '€', flag: '🇩🇪' },
 ];
 
-export const KNOWN_ANCHORS: Anchor[] = [
-  {
-    id: 'bitso',
-    name: 'Bitso',
-    homeDomain: 'bitso.com',
-    corridors: ['usdc-mxn', 'usdc-brl'],
-    assetCode: 'USDC',
-    assetIssuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
-  },
-  {
-    id: 'flutterwave',
-    name: 'Flutterwave',
-    homeDomain: 'flutterwave.com',
-    corridors: ['usdc-ngn', 'usdc-kes', 'usdc-ghs'],
-    assetCode: 'USDC',
-    assetIssuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
-  },
-  {
-    id: 'mychoice',
-    name: 'MyChoice',
-    homeDomain: 'mychoicefinance.com',
-    corridors: ['usdc-php'],
-    assetCode: 'USDC',
-    assetIssuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
-  },
-  {
-    id: 'tempo',
-    name: 'Tempo',
-    homeDomain: 'tempo.eu.com',
-    corridors: ['usdc-eur'],
-    assetCode: 'USDC',
-    assetIssuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
-  },
-  {
-    id: 'cowrie',
-    name: 'Cowrie Exchange',
-    homeDomain: 'cowrie.exchange',
-    corridors: ['usdc-ngn'],
-    assetCode: 'USDC',
-    assetIssuer: 'GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN',
-  },
-];
 
 export const REVALIDATION_INTERVAL = 30_000; // 30 seconds
 
