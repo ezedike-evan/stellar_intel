@@ -3,7 +3,7 @@ import type { Transaction, FeeBumpTransaction } from '@stellar/stellar-sdk'
 import { getWebAuthEndpoint } from './sep1'
 import type { Sep10Auth } from '@/types'
 
-// ─── Typed error ──────────────────────────────────────────────────────────────
+// ─── Typed errors ─────────────────────────────────────────────────────────────
 
 export type ChallengeErrorCode = 'FETCH_FAILED' | 'MISSING_FIELD' | 'WRONG_NETWORK' | 'INVALID_XDR'
 
@@ -17,12 +17,42 @@ export class ChallengeError extends Error {
   }
 }
 
+export class Sep10AuthError extends Error {
+  constructor(
+    message: string,
+    public readonly status: number
+  ) {
+    super(message)
+    this.name = 'Sep10AuthError'
+  }
+}
+
 // ─── Challenge types ──────────────────────────────────────────────────────────
 
 export interface Sep10Challenge {
   transaction: string
   network_passphrase: string
   parsed: Transaction | FeeBumpTransaction
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function decodeJwtExp(token: string): number {
+  const parts = token.split('.')
+  if (parts.length !== 3) {
+    throw new Error('Invalid JWT: expected 3 dot-separated segments')
+  }
+  const base64 = (parts[1] as string).replace(/-/g, '+').replace(/_/g, '/')
+  let payload: Record<string, unknown>
+  try {
+    payload = JSON.parse(atob(base64)) as Record<string, unknown>
+  } catch {
+    throw new Error('JWT payload could not be decoded')
+  }
+  if (typeof payload['exp'] !== 'number') {
+    throw new Error('JWT is missing a numeric "exp" claim')
+  }
+  return payload['exp']
 }
 
 // ─── fetchSep10Challenge ──────────────────────────────────────────────────────
@@ -149,7 +179,7 @@ export async function signChallenge(
 export async function submitChallenge(
   webAuthEndpoint: string,
   signedXdr: string
-): Promise<string> {
+): Promise<{ token: string; expiresAt: Date }> {
   const res = await fetch(webAuthEndpoint, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -157,7 +187,10 @@ export async function submitChallenge(
   })
 
   if (!res.ok) {
-    throw new Error(`JWT exchange failed: HTTP ${res.status} from ${webAuthEndpoint}`)
+    throw new Sep10AuthError(
+      `JWT exchange failed: HTTP ${res.status} from ${webAuthEndpoint}`,
+      res.status
+    )
   }
 
   const data = (await res.json()) as Record<string, unknown>
@@ -167,7 +200,13 @@ export async function submitChallenge(
     throw new Error(`Missing "token" field in JWT response from ${webAuthEndpoint}`)
   }
 
-  return token
+  const exp = decodeJwtExp(token)
+  const nowSeconds = Math.floor(Date.now() / 1000)
+  if (exp <= nowSeconds) {
+    throw new Error(`JWT has already expired (exp: ${exp})`)
+  }
+
+  return { token, expiresAt: new Date(exp * 1000) }
 }
 
 // ─── Full auth orchestrator ───────────────────────────────────────────────────
@@ -182,9 +221,7 @@ export async function authenticate(
   }
   const { transaction, network_passphrase } = await fetchChallenge(webAuthEndpoint, publicKey)
   const signedXdr = await signChallenge(transaction, network_passphrase)
-  const jwt = await submitChallenge(webAuthEndpoint, signedXdr)
-
-  const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000)
+  const { token: jwt, expiresAt } = await submitChallenge(webAuthEndpoint, signedXdr)
 
   return { jwt, anchorDomain, publicKey, expiresAt }
 }
