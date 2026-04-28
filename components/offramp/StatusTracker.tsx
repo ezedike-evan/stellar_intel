@@ -1,5 +1,6 @@
 'use client'
 import type { WithdrawStatusValue } from '@/types'
+import { formatDeliveredAmount } from '@/lib/format'
 
 interface StatusTrackerProps {
   transactionId: string
@@ -9,6 +10,8 @@ interface StatusTrackerProps {
   amountOut: string | undefined
   amountOutAsset: string | undefined
   amountFee: string | undefined
+  /** ISO 4217 currency code for the destination corridor (e.g. "NGN", "KES"). */
+  currencyCode: string
   stellarTransactionId: string | undefined
   externalTransactionId: string | undefined
   isLoading: boolean
@@ -62,15 +65,23 @@ export function StatusTracker({
   amountOut,
   amountOutAsset,
   amountFee,
+  currencyCode,
   stellarTransactionId,
   externalTransactionId,
   isLoading,
   error,
 }: StatusTrackerProps) {
   const isTerminal = status ? TERMINAL.includes(status) : false
+  const isCompleted = status === 'completed'
 
   return (
-    <div className="rounded-xl border border-gray-200 p-5 dark:border-gray-700">
+    <div
+      className={`rounded-xl border p-5 transition-colors ${
+        isCompleted
+          ? 'border-green-200 bg-green-50 dark:border-green-800/40 dark:bg-green-950/20'
+          : 'border-gray-200 dark:border-gray-700'
+      }`}
+    >
       <div className="mb-4 flex items-start justify-between">
         <div>
           <h3 className="text-sm font-semibold text-gray-900 dark:text-white">Transaction Status</h3>
@@ -83,6 +94,18 @@ export function StatusTracker({
           </span>
         )}
       </div>
+
+      {/* Completion celebration */}
+      {isCompleted && amountOut && (
+        <div className="mb-4 animate-in fade-in slide-in-from-bottom-2 duration-500">
+          <p className="text-xs font-medium uppercase tracking-wide text-green-600 dark:text-green-400">
+            Delivered
+          </p>
+          <p className="mt-0.5 text-3xl font-bold tabular-nums text-green-700 dark:text-green-300">
+            {formatDeliveredAmount(amountOut, currencyCode)}
+          </p>
+        </div>
+      )}
 
       {/* Status badge */}
       <div className="mb-4 flex items-center gap-2">
@@ -99,8 +122,8 @@ export function StatusTracker({
         </p>
       )}
 
-      {/* Amount details */}
-      {(amountIn || amountOut) && (
+      {/* Amount details — hidden when celebration banner is shown */}
+      {(amountIn || amountOut) && !isCompleted && (
         <dl className="mb-4 space-y-1.5 text-sm">
           {amountIn && (
             <div className="flex justify-between">

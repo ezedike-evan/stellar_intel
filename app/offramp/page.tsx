@@ -126,6 +126,7 @@ export default function OfframpPage() {
           amountOut={withdrawStatus.amountOut}
           amountOutAsset={withdrawStatus.amountOutAsset}
           amountFee={withdrawStatus.amountFee}
+          currencyCode={corridorId.split('-')[1]?.toUpperCase() ?? 'USD'}
           stellarTransactionId={withdrawStatus.stellarTransactionId}
           externalTransactionId={withdrawStatus.externalTransactionId}
           isLoading={withdrawStatus.isLoading}
