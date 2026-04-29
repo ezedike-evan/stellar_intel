@@ -23,7 +23,7 @@ export default function OfframpPage() {
   const [trackingJwt, setTrackingJwt] = useState<string | null>(null)
 
   const { isConnected, publicKey } = useFreighter()
-  const { rates, isLoading, error, mutate } = useAnchorRates(corridorId, amount)
+  const { rates, isLoading, error, mutate, refreshInflight } = useAnchorRates(corridorId, amount)
 
   const withdrawStatus = useWithdrawStatus(
     trackingTransferServer,
@@ -111,6 +111,7 @@ export default function OfframpPage() {
         <RateTable
           rates={rates}
           isLoading={isLoading}
+          refreshInflight={refreshInflight}
           error={error}
           onSelectAnchor={handleSelectAnchor}
         />

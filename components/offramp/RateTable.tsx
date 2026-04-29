@@ -30,12 +30,13 @@ function sourceBadge(source: AnchorRate['source']): React.ReactNode {
 interface RateTableProps {
   rates: RateComparison | undefined
   isLoading: boolean
+  refreshInflight?: boolean
   error: string | undefined
   onSelectAnchor: (rate: AnchorRate) => void
 }
 
-export function RateTable({ rates, isLoading, error, onSelectAnchor }: RateTableProps) {
-  if (isLoading && (!rates || rates.rates.length === 0)) {
+export function RateTable({ rates, isLoading, refreshInflight, error, onSelectAnchor }: RateTableProps) {
+  if ((isLoading || refreshInflight) && (!rates || rates.rates.length === 0)) {
     return (
       <div className="overflow-hidden rounded-xl border border-gray-200 dark:border-gray-700">
         <Skeleton rows={5} />
