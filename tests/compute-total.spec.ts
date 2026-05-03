@@ -4,10 +4,10 @@ import { computeTotalReceived } from '@/lib/utils'
 
 describe('computeTotalReceived - Property-Based Tests', () => {
   // Generators with realistic constraints for fiat/crypto amounts
-  const amountArb = fc.floatBetween(0, 1_000_000, { noNaN: true, noDefaultInfinity: true })
-  const feeArb = fc.floatBetween(0, 100_000, { noNaN: true, noDefaultInfinity: true })
-  const feePercentArb = fc.floatBetween(0, 100, { noNaN: true, noDefaultInfinity: true })
-  const exchangeRateArb = fc.floatBetween(0.01, 1_000_000, { noNaN: true, noDefaultInfinity: true })
+  const amountArb = fc.double({ min: 0, max: 1_000_000, noNaN: true, noDefaultInfinity: true })
+  const feeArb = fc.double({ min: 0, max: 100_000, noNaN: true, noDefaultInfinity: true })
+  const feePercentArb = fc.double({ min: 0, max: 100, noNaN: true, noDefaultInfinity: true })
+  const exchangeRateArb = fc.double({ min: 0.01, max: 1_000_000, noNaN: true, noDefaultInfinity: true })
 
   it('total received is always non-negative', () => {
     fc.assert(
